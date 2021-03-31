@@ -31,6 +31,9 @@ redis采用定期和惰性删除两种策略结合
 对数据库的操作：
 select、flushdb、dbsize
 
+redis集群：
+1、一共有16384个slot，可以用 cluster addslots手动分配，cluster delslots删除，cluster flushslots删除所有
+
 持久化：
 1、rdb文件：save（阻塞服务）或者bgsave（fork子进程）命令生成，可以设置服务器bgsave执行周期（xxx时间内有xxx次修改），启动时若rdb文件存在则自动载入恢复内存（有aof优先使用aof恢复内存）。
 2、aof文件：将每次执行的命令记录下来，通过appendfsync配置文件生成的节奏always（每次都写入磁盘）、everysec（一秒之内有更新就写入磁盘）或者no（系统决定何时写入磁盘），启动时载入文件重新执行所有命令来恢复内存。由于aof文件是通过记录命令来恢复内存，文件会越来越大，redis会通过重写来缩小文件，重写是直接分析内存生成新的aof文件，不需要对原来的aof文件进行处理。
