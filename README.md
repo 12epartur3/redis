@@ -47,4 +47,6 @@ redis服务器：
 
 redis集群：
 1、一共有16384个slot，可以用 cluster addslots手动分配，cluster delslots删除，cluster flushslots删除所有slot,cluster keyslots计算key分配到哪个槽。
-2、redis-cli --cluster fix ip：port自动分配槽
+2、redis-cli --cluster fix ip：port自动分配槽。
+3、slot是一个char slot[2048]的数组，一共有2048x8=16384个bit，bit为1表示这个节点拥有这个slot，key如果算到了这个slot上，会把k和v都存到这个redis节点。
+4、客户端接收命令时，先计算出key属于哪个slot，再判断这个slot是否属于自己，属于自己则执行命令，否则就产生move错误指引客户端重定向到负责该slot的节点执行命令。
