@@ -50,3 +50,5 @@ redis集群：
 2、redis-cli --cluster fix ip：port自动分配槽。
 3、slot是一个char slot[2048]的数组，一共有2048x8=16384个bit，bit为1表示这个节点拥有这个slot，key如果算到了这个slot上，会把k和v都存到这个redis节点。
 4、客户端接收命令时，先计算出key属于哪个slot，再判断这个slot是否属于自己，属于自己则执行命令，否则就产生move错误指引客户端重定向到负责该slot的节点执行命令。
+5、一个slot会包含多个key，redis可以迁移slot，迁移时如果客户端执行命令，当前节点没有查到这个key时，会发ask错误到客户端指引客户端重定向到slot迁移的目标节点上进行查找。
+6、可以为集群master节点设置从节点，从节点用于复制master节点，master节点下线后，选举该master的一个slave节点接管master节点的任务，当master节点上线后，从节点又会变成slave。
